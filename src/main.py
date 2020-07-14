@@ -1,6 +1,7 @@
 import lyricsgenius # Python-based Genius API
 import pandas as pd # For organizing data to analyze
 import utils # For sanitation 
+import argparse # For option specifications
 
 # For lyrical analysis
 import numpy as np
@@ -24,22 +25,48 @@ nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('vader_lexicon', quiet=True)
 
-# User input
-# Authenticate with Genius API, set conditions
-genius = lyricsgenius.Genius(client_access_token=input('Please enter API key: '),remove_section_headers=True)
-artist_to_search = input('Enter artist to search: ')
+parser = argparse.ArgumentParser(description='Gather lyrical info')
+parser.add_argument('--key', type=str, default=None, help='key for genius api')
+parser.add_argument('--artist', type=str, default=None, help='artist to search for (must be surrounded in quotes if multiple words)')
+parser.add_argument('--album', type=str, default=None, help='album to search for (must be surrounded in quotes if multiple words)')
+parser.add_argument('--song', type=str, default=None, help='song to search for (must be surrounded in quotes if multiple words)')
 
-# Create artist (max_songs = -1 in order to be able to selectively add songs later on)
-## Note: Want max_songs = 0 but bug causes all songs to be searched instead of none
-artist = genius.search_artist(artist_to_search, sort="title")
+args = parser.parse_args()
 
 # Create variables to store song info in format easy to work with
 df = pd.DataFrame(columns=['Song', 'Album', 'Year', 'Lyrics'])
 
-# Create dataframe with all necessary song info
-for song in artist.songs[1:]:
-    date = song.year.split('-')[0] if song.year is not None else np.nan
-    df = df.append({'Song':song.title, 'Album':song.album, 'Date':date, 'Lyrics':song.lyrics}, ignore_index=True)
+# Request user input if args not used
+if args.key == None:
+    key = input('Please enter API key: ')
+else: 
+    key = args.key
+
+if args.artist == None:
+    artist_to_search = input('Please enter artist to search: ')
+else: 
+    artist_to_search = args.artist
+
+# Access API and make sure key valid
+# Create and search for artist
+while True:
+    try:
+        genius = lyricsgenius.Genius(client_access_token=key, remove_section_headers=True)
+        artist = genius.search_artist(artist_to_search, sort="title")
+        break
+    except TypeError:
+        print('Incorrect API key provided')
+        key = input('Please enter API key: ')
+
+while True:
+    try:
+        # Create dataframe with all necessary song info
+        for song in artist.songs[1:]:
+            date = song.year.split('-')[0] if song.year is not None else np.nan
+            df = df.append({'Song':song.title, 'Album':song.album, 'Date':date, 'Lyrics':song.lyrics}, ignore_index=True)
+    except AttributeError:
+        artist_to_search = input('Please enter artist to search: ')
+        artist = genius.search_artist(artist_to_search, sort="title")
 
 # Tokenize lyrics & remove stop words
 df.Lyrics = df.Lyrics.apply(word_tokenize)
