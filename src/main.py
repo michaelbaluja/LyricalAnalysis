@@ -1,7 +1,10 @@
 import lyricsgenius # Python-based Genius API
 import pandas as pd # For organizing data to analyze
-import utils # For sanitation 
+import lib.utils.utils as utils # For sanitation 
 import argparse # For option specifications
+
+# For graphing
+import lib.utils.grapher as gr
 
 # For lyrical analysis
 import numpy as np
@@ -64,6 +67,7 @@ while True:
         for song in artist.songs[1:]:
             date = song.year.split('-')[0] if song.year is not None else np.nan
             df = df.append({'Song':song.title, 'Album':song.album, 'Date':date, 'Lyrics':song.lyrics}, ignore_index=True)
+        break
     except AttributeError:
         artist_to_search = input('Please enter artist to search: ')
         artist = genius.search_artist(artist_to_search, sort="title")
@@ -94,14 +98,4 @@ df = utils.trim_songs(df, remix=True, unfinished=True)
 
 # Plot albums
 for album in albums_to_analyze:
-    pos = df[df.Album == album].pos.sum()
-    neg = df[df.Album == album].neg.sum()
-    neu = df[df.Album == album].neu.sum()
-    tot = pos + neg + neu
-    
-    plt.pie([pos / tot, neg / tot, neu / tot], autopct='%1.0f%%')
-    plt.legend(['Negative', 'Positive', 'Neutral'])
-    plt.title('"{}" Sentiment'.format(album))
-    plt.show()
-    #plt.savefig('../images/{}_pie_chart.png'.format(album))
-    plt.close()
+    gr.pieplot(df, album)
