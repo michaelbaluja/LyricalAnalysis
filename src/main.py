@@ -29,6 +29,9 @@ parser.add_argument('--key', type=str, default=None, help='key for genius api')
 parser.add_argument('--artist', type=str, default=None, help='artist to search for (must be surrounded in quotes if multiple words)')
 parser.add_argument('--album', type=str, default=None, help='album to search for (must be surrounded in quotes if multiple words)')
 parser.add_argument('--song', type=str, default=None, help='song to search for (must be surrounded in quotes if multiple words)')
+parser.add_argument('--by', type=str, default=None, help='specifies how to analyze the selected artist/song/album', choices={'album', 'artist', 'song'})
+parser.add_argument('--remove_remix', dest='remove_remix', action='store_true')
+parser.add_argument('--remove_unfinished', dest='remove_unfinished', action='store_true')
 
 args = parser.parse_args()
 
@@ -53,9 +56,8 @@ while True:
         key = input('Please enter API key: ')
 
 # Create analysis onbject and analyze artist
-analyzer = Analyzer.Analyzer(genius)
-df = analyzer.analyze_artist(artist_to_search, stop_words, sentiment_analyzer)
+analyzer = Analyzer.Analyzer(genius, args)
+df = analyzer.analyze_artist(artist_to_search, stop_words, sentiment_analyzer, by=args.by)
 
 # Gather artists to analuze and graph them
-analyzer.get_albums_to_analyze(df)
-analyzer.graph(df, how=['pie'])
+analyzer.graph(df, how=['pie'], by=args.by)
