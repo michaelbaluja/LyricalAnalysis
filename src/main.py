@@ -7,10 +7,11 @@ import Analyzer
 import numpy as np
 import nltk
 from nltk.corpus import stopwords
+import string
 from nltk.sentiment.vader import SentimentIntensityAnalyzer 
 
 sentiment_analyzer = SentimentIntensityAnalyzer()
-stop_words = set(stopwords.words('english'))
+stop_words = set(stopwords.words('english') + [punc for punc in string.punctuation])
 
 # Import graphing tools
 import matplotlib.pyplot as plt
