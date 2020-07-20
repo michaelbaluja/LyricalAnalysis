@@ -16,25 +16,24 @@ def trim_songs(df, remix=False, unfinished=False):
             specifies whether or not "unfinished" songs should be removed
     '''
     if remix:
-        df = remove_remix(df)
+        df, remix_songs = remove_remix(df)
     if unfinished:
-        df = remove_unfinished(df)
+        df, unfinished_songs = remove_unfinished(df)
     
+    print('songs to remove: ', remix_songs + unfinished_songs)
+
     return df
 
 def remove_remix(df):
     remix_words = ['remix', 'alternate', 'cover', 'music video']
     songs_to_remove = [song for song in df.Song.values if any([remix_word in song.lower() \
                         for remix_word in remix_words]) and song.lower() not in remix_words]
-    print('songs to remove: ', songs_to_remove)
     df = df.loc[~df.Song.isin(songs_to_remove)]
-
-    return df
+    return df, songs_to_remove
 
 def remove_unfinished(df):
     unfinished_words = ['snippet', 'note', 'leak', 'demo']
     songs_to_remove = [song for song in df.Song.values if any([unfinished_word in song.lower() \
                         for unfinished_word in unfinished_words]) and song.lower() not in unfinished_words]
-    print('songs to remove: ', songs_to_remove)
     df = df.loc[~df.Song.isin(songs_to_remove)]   
-    return df
+    return df, songs_to_remove
