@@ -42,11 +42,6 @@ if args.key == None:
 else: 
     key = args.key
 
-if args.artist == None:
-    artist_to_search = input('Please enter artist to search: ')
-else: 
-    artist_to_search = args.artist
-
 # Access API and make sure key valid
 while True:
     try:
@@ -58,7 +53,10 @@ while True:
 
 # Create analysis onbject and analyze artist
 analyzer = Analyzer.Analyzer(genius, args)
-df = analyzer.analyze_artist(artist_to_search, stop_words, sentiment_analyzer, by=args.by)
+if args.artist is not None and args.song is None:
+    df = analyzer.analyze_artist(args.artist, stop_words, sentiment_analyzer, by=args.by)
+elif args.song is not None:
+    df = analyzer.analyze_song(args.song, stop_words, sentiment_analyzer, args.artist)
 
 # Gather artists to analuze and graph them
 analyzer.graph(df, how=['pie'], by=args.by)

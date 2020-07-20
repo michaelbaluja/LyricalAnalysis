@@ -14,7 +14,6 @@ def pieplot(df, item, vals, save_file=None):
     - save_file=None (bool)
         - specifies if and where the resulting chart should be saved
     '''
-    
     # Plotting & Titling
     plt.pie(vals, autopct='%1.0f%%')
     plt.legend(['Positive', 'Negative', 'Neutral'])

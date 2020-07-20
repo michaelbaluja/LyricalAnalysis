@@ -29,7 +29,7 @@ class Analyzer():
             - string name for the artist to search for songs from
         - stop_words: (list)
             - list of words to be removed from the lyrics as they don't provide sentiment information
-        - sentiment_analyer: (nltk.SentimentIntensityAnalyzer)
+        - sentiment_analyzer: (nltk.SentimentIntensityAnalyzer)
             - analyzer class to provide sentiment information for the words (lyrics) passed in
         - by='album': (str)
             - specifies how to chunk the analysis being done.
@@ -51,7 +51,6 @@ class Analyzer():
                 break
             except AttributeError:
                 artist_to_search = input('Please enter artist to search: ')
-                artist = self.genius.search_artist(artist_to_search, sort="title")
 
         df = self.tokenize(df, stop_words)
         df = self.add_sentiment(df, sentiment_analyzer)
@@ -70,6 +69,38 @@ class Analyzer():
 
         return df
 
+    def analyze_song(self, song_to_search, stop_words, sentiment_analyzer, song_artist=None):
+        '''
+        Performs sentiment analysis for the provided song.
+
+        Parameters:
+        - song_to_analyze: (str)
+            - title of song to analyze
+        - stop_words: (set)
+            - list of words to be removed from the lyrics as they don't provide sentiment information
+        - sentiment_analyzer: (nltk.SentimentIntensityAnalyzer)
+            - analyzer class to provide sentiment information for the words (lyrics) passed in
+        - song_artist=None: (str)
+            - artist of song to search
+        '''
+        # Create variables to store song info in format easy to work with
+        df = pd.DataFrame(columns=['Song', 'Lyrics'])
+
+        while True:
+            try:
+                song = [self.genius.search_song(song_to_search, artist=song_artist if song_artist is not None else '')]
+                # Create dataframe with all necessary song info
+                df = df.append({'Song':song_to_search, 'Lyrics':song[0].lyrics}, ignore_index=True)
+            except AttributeError:
+                song_to_search = input('Please enter correct song to search: ')
+            break
+
+        df = self.tokenize(df, stop_words)
+        df = self.add_sentiment(df, sentiment_analyzer)
+        self.songs_to_analyze = df.Song.values
+
+        return df
+
     def tokenize(self, df, stop_words):
         '''
         Takes DataFrame containing lists of lyrics, removes all provided stop_words, and separates the lyrics by word
@@ -85,8 +116,8 @@ class Analyzer():
             - DataFrame with lyrics separated by word
         '''
         # Tokenize lyrics & remove stop words
-        df.Lyrics = df.Lyrics.apply(word_tokenize)
-        df.Lyrics = df.Lyrics.apply(lambda lyrics: [word for word in lyrics if word not in stop_words])
+        df['Lyrics'] = df['Lyrics'].apply(word_tokenize)
+        df['Lyrics'] = df['Lyrics'].apply(lambda lyrics: [word for word in lyrics if word not in stop_words])
 
         return df
 
@@ -148,14 +179,14 @@ class Analyzer():
             - specifies how to collect sentiment
         '''
         try:
-            if by == 'abum':
+            if by == 'album':
                 self.get_album_sentiment(df, item)
             elif by == 'song':
                 self.get_song_sentiment(df, item)
             else:
                 raise TypeError()
         except TypeError:
-            print("An incorrect sentiment scope was passed in. Recieved {} by expected 'album' or 'song'".format(by))
+            print("An incorrect sentiment scope was passed in. Recieved '{}' but expected 'album' or 'song'".format(by))
 
     def get_album_sentiment(self, df, album):
         '''
