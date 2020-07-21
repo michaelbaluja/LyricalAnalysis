@@ -243,4 +243,10 @@ class Analyzer():
         if 'pie' in how:
             for item in items_to_graph:
                 self.get_sentiment(df, item, by)
-                gr.pieplot(df, item, self.vals)
+                gr.pieplot(item, self.vals)
+        if 'line' in how:
+            sentiment_vals = []
+            for item in items_to_graph:
+                self.get_sentiment(df, item, by)
+                sentiment_vals.append(self.vals)
+            gr.lineplot(items_to_graph, sentiment_vals, by)
