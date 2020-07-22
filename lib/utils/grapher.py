@@ -38,7 +38,7 @@ def lineplot(items, vals, by, save_file=None):
     '''
     # Plotting & Titling
     for idx in range(3):
-        plt.plot([val[idx] for val in vals])
+        plt.plot([val[idx] for val in vals], linewidth=2.0)
     plt.title('Sentiment across {}s'.format(by))
     plt.legend(['Positive', 'Negative', 'Neutral'])
 
