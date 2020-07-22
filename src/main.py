@@ -30,7 +30,8 @@ parser.add_argument('--key', type=str, default=None, help='key for genius api')
 parser.add_argument('--artist', type=str, default=None, help='artist to search for (must be surrounded in quotes if multiple words)')
 parser.add_argument('--album', type=str, default=None, help='album to search for (must be surrounded in quotes if multiple words)')
 parser.add_argument('--song', type=str, default=None, help='song to search for (must be surrounded in quotes if multiple words)')
-parser.add_argument('--by', type=str, default=None, help='specifies how to analyze the selected artist/song/album', choices={'album', 'artist', 'song'})
+parser.add_argument('--by', type=str, default=None, help='specifies how to analyze the selected artist/song/album', choices=['album', 'artist', 'song'])
+parser.add_argument('--plot', nargs='+', action='append', help='specifies how to plot the sentiment', choices=['line', 'pie'])
 parser.add_argument('--remove_remix', dest='remove_remix', action='store_true')
 parser.add_argument('--remove_unfinished', dest='remove_unfinished', action='store_true')
 
@@ -59,4 +60,4 @@ elif args.song is not None:
     df = analyzer.analyze_song(args.song, stop_words, sentiment_analyzer, args.artist)
 
 # Gather artists to analuze and graph them
-analyzer.graph(df, how=['pie'], by=args.by)
+analyzer.graph(df, how=args.plot[0], by=args.by)
