@@ -25,14 +25,14 @@ def trim_songs(df, remix=False, unfinished=False):
     return df
 
 def remove_remix(df):
-    remix_words = ['remix', 'alternate', 'cover', 'music video']
+    remix_words = ['(remix', 'remix)', '(alternate', 'alternate)', '(cover', 'cover)', '(music video', 'music video)', '(a cappella', 'a cappella)']
     songs_to_remove = [song for song in df.Song.values if any([remix_word in song.lower() \
                         for remix_word in remix_words]) and song.lower() not in remix_words]
     df = df.loc[~df.Song.isin(songs_to_remove)]
     return df, songs_to_remove
 
 def remove_unfinished(df):
-    unfinished_words = ['snippet', 'note', 'leak', 'demo']
+    unfinished_words = ['(snippet', 'snippet)', '(note', 'note)', '(leak', 'leak)', '(demo', 'demo)']
     songs_to_remove = [song for song in df.Song.values if any([unfinished_word in song.lower() \
                         for unfinished_word in unfinished_words]) and song.lower() not in unfinished_words]
     df = df.loc[~df.Song.isin(songs_to_remove)]   
