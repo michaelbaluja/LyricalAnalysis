@@ -88,12 +88,17 @@ class Analyzer():
 
         while True:
             try:
+                if song_artist is not None:
+                    verbose_state = self.genius.verbose
+                    self.genius.verbose = True
                 song = [self.genius.search_song(song_to_search, artist=song_artist if song_artist is not None else '')]
                 # Create dataframe with all necessary song info
                 df = df.append({'Song':song[0].title, 'Lyrics':song[0].lyrics}, ignore_index=True)
+                self.genius.verbose = verbose_state
                 break
             except AttributeError:
                 song_to_search = input('Please enter correct song to search: ')
+                song_artist = input('Please enter song artist (press enter if same artist): ')
 
         df = self.tokenize(df, stop_words)
         df = self.add_sentiment(df, sentiment_analyzer)
