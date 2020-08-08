@@ -90,10 +90,10 @@ class Analyzer():
             try:
                 song = [self.genius.search_song(song_to_search, artist=song_artist if song_artist is not None else '')]
                 # Create dataframe with all necessary song info
-                df = df.append({'Song':song_to_search, 'Lyrics':song[0].lyrics}, ignore_index=True)
+                df = df.append({'Song':song[0].title, 'Lyrics':song[0].lyrics}, ignore_index=True)
+                break
             except AttributeError:
                 song_to_search = input('Please enter correct song to search: ')
-            break
 
         df = self.tokenize(df, stop_words)
         df = self.add_sentiment(df, sentiment_analyzer)
