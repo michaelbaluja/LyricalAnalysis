@@ -41,13 +41,13 @@ class Analyzer():
         - df: (pd.DataFrame)
             - DataFrame object containing artist sentiment information
         '''
-        # Create variables to store song info in format easy to work with
-        df = pd.DataFrame(columns=['Song', 'Album', 'Year', 'Lyrics'])
 
         # Double if statement so that if a cached file is not found, the is_cache variable is set to False, and the data collection takes place
         if self.is_cached:
             df = self.from_cache(filename='{}_by_{}'.format(artist_to_search.replace(' ', ''), by))
         if not self.is_cached:
+            # Create variables to store song info in format easy to work with
+            df = pd.DataFrame(columns=['Song', 'Album', 'Year', 'Lyrics'])
             while True:
                 try:
                     artist = self.genius.search_artist(artist_to_search, sort="title")
@@ -93,11 +93,12 @@ class Analyzer():
         - song_artist=None: (str)
             - artist of song to search
         '''
-        # Create variables to store song info in format easy to work with
-        df = pd.DataFrame(columns=['Song', 'Lyrics'])
+
         if self.is_cached:
             df = self.from_cache(filename=song_to_search.replace(' ', ''))
         if not self.is_cached:
+            # Create variables to store song info in format easy to work with
+            df = pd.DataFrame(columns=['Song', 'Lyrics'])
             while True:
                 try:
                     if song_artist is not None:
@@ -159,13 +160,14 @@ class Analyzer():
             - if csv was found, returns content in dataframe
         '''
         try:
-            df = pd.read_json('cache/filename.json')
+            df = pd.read_json('cache/{}.json'.format(filename))
             return df
-        except FileNotFoundError:
+        except ValueError:
             print('Cached data could not be found, building from scratch')
             self.cache = True if input('Would you like to cache this new data? (y/n): ').lower() in ('y', 'yes') else False
             print('Data will be cached') if self.cache is True else print('Data will not be cached')
             self.is_cached = False
+            
 
     def tokenize(self, df, stop_words):
         '''
