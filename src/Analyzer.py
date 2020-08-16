@@ -44,7 +44,7 @@ class Analyzer():
 
         # Double if statement so that if a cached file is not found, the is_cache variable is set to False, and the data collection takes place
         if self.is_cached:
-            df = self.from_cache(filename='{}_by_{}'.format(artist_to_search.replace(' ', ''), by))
+            df = self.from_cache(filename=artist_to_search.replace(' ', ''))
         if not self.is_cached:
             # Create variables to store song info in format easy to work with
             df = pd.DataFrame(columns=['Song', 'Album', 'Year', 'Lyrics'])
@@ -67,7 +67,7 @@ class Analyzer():
 
             if self.cache:
                 print('artist:', artist_to_search.strip())
-                self.to_cache(filename='{}_by_{}'.format(artist_to_search.replace(' ', ''), by), df=df)
+                self.to_cache(filename=artist_to_search.replace(' ', ''), df=df)
         # Drop remixed songs 
         df = utils.trim_songs(df, remix=self.remove_remix, unfinished=self.remove_unfinished)
 
@@ -95,7 +95,11 @@ class Analyzer():
         '''
 
         if self.is_cached:
-            df = self.from_cache(filename=song_to_search.replace(' ', ''))
+            if song_artist is not None:
+                filename = '{}_by_{}'.format(song_to_search.replace(' ', ''), song_artist.replace(' ', ''))
+            else:
+                filename = '{}'.format(song_to_search.replace(' ', ''))
+            df = self.from_cache(filename=filename)
         if not self.is_cached:
             # Create variables to store song info in format easy to work with
             df = pd.DataFrame(columns=['Song', 'Lyrics'])
