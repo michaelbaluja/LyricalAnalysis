@@ -40,10 +40,15 @@ parser.add_argument('--cache', dest='cache', action='store_true')
 args = parser.parse_args()
 
 # Request user input if args not used
-if args.genius_key == None:
+if args.genius_key is None:
     genius_key = input('Please enter Genius API key: ')
 else: 
     genius_key = args.genius_key
+
+if args.by is None and args.song is None and args.artist is not None:
+    args.by = input('How would you like to analyze? (album/song): ')
+elif args.by is None and args.song is not None:
+    args.by = 'song'
 
 # Access API and make sure key valid
 while True:
@@ -58,8 +63,10 @@ while True:
 analyzer = Analyzer.Analyzer(genius, args)
 if args.artist is not None and args.song is None:
     df = analyzer.analyze_artist(args.artist, stop_words, sentiment_analyzer, by=args.by)
+    by = args.by
 elif args.song is not None:
     df = analyzer.analyze_song(args.song, stop_words, sentiment_analyzer, args.artist)
+    by = 'song'
 
 # Gather artists to analuze and graph them
-analyzer.graph(df, how=args.plot[0], by=args.by)
+analyzer.graph(df, how=args.plot[0], by=by)
