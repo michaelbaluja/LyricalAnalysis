@@ -69,4 +69,5 @@ elif args.song is not None:
     by = 'song'
 
 # Gather artists to analuze and graph them
-analyzer.graph(df, how=args.plot[0], by=by)
+if args.graph is not None:
+    analyzer.graph(df, how=args.plot[0], by=by)
