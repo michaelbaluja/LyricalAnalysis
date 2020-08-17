@@ -3,6 +3,11 @@ import pandas as pd # For organizing data to analyze
 import argparse # For option specifications
 import Analyzer
 
+# For importing env variable 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 # For lyrical analysis
 import numpy as np
 import nltk
@@ -39,8 +44,9 @@ parser.add_argument('--cache', dest='cache', action='store_true')
 
 args = parser.parse_args()
 
-# Request user input if args not used
-if args.genius_key is None:
+if args.genius_key is None and os.environ.get('GENIUS_KEY') is not None:
+    genius_key = os.environ.get('GENIUS_KEY')
+elif args.genius_key is None:
     genius_key = input('Please enter Genius API key: ')
 else: 
     genius_key = args.genius_key
