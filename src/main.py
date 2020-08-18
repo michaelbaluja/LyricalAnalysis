@@ -36,7 +36,7 @@ parser.add_argument('--artist', type=str, default=None, help='artist to search f
 parser.add_argument('--album', type=str, default=None, help='album to search for (must be surrounded in quotes if multiple words)')
 parser.add_argument('--song', type=str, default=None, help='song to search for (must be surrounded in quotes if multiple words)')
 parser.add_argument('--by', type=str, default=None, help='specifies how to analyze the selected artist/song/album', choices=['album', 'artist', 'song'])
-parser.add_argument('--plot', nargs='+', action='append', help='specifies how to plot the sentiment', choices=['line', 'pie'])
+parser.add_argument('--plot', default=None, nargs='+', action='append', help='specifies how to plot the sentiment', choices=['line', 'pie'])
 parser.add_argument('--remove_remix', dest='remove_remix', action='store_true')
 parser.add_argument('--remove_unfinished', dest='remove_unfinished', action='store_true')
 parser.add_argument('--from_cache', dest='from_cache', action='store_true')
@@ -51,6 +51,7 @@ elif args.genius_key is None:
 else: 
     genius_key = args.genius_key
 
+# Prompt for API key if one not already present
 if args.by is None and args.song is None and args.artist is not None:
     args.by = input('How would you like to analyze? (album/song): ')
 elif args.by is None and args.song is not None:
@@ -75,5 +76,5 @@ elif args.song is not None:
     by = 'song'
 
 # Gather artists to analuze and graph them
-if args.graph is not None:
+if args.plot is not None:
     analyzer.graph(df, how=args.plot[0], by=by)

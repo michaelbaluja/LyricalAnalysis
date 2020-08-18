@@ -22,6 +22,7 @@ class Analyzer():
         self.remove_unfinished = args.remove_unfinished
         self.cache = args.cache
         self.is_cached = args.from_cache
+        self.plot = args.plot
 
     def analyze_artist(self, artist_to_search, stop_words, sentiment_analyzer, by='album'):
         '''
@@ -66,16 +67,16 @@ class Analyzer():
             df['Album'] = df['Album'].apply(lambda title: 'noalbum' if title is None else title)
 
             if self.cache:
-                print('artist:', artist_to_search.strip())
                 self.to_cache(filename=artist_to_search.replace(' ', ''), df=df)
         # Drop remixed songs 
         df = utils.trim_songs(df, remix=self.remove_remix, unfinished=self.remove_unfinished)
 
-        # Gather songs based on specified method
-        if by == 'album':
-            self.get_albums_to_analyze(df)
-        elif by == 'song':
-            self.get_songs_to_analyze()
+        if self.plot:
+            # Gather songs based on specified method
+            if by == 'album':
+                self.get_albums_to_analyze(df)
+            elif by == 'song':
+                self.get_songs_to_analyze()
 
         return df
 
@@ -164,7 +165,9 @@ class Analyzer():
             - if csv was found, returns content in dataframe
         '''
         try:
+            print('Reading data from cache...', end=' ')
             df = pd.read_json('cache/{}.json'.format(filename))
+            print('done')
             return df
         except ValueError:
             print('Cached data could not be found, building from scratch')
