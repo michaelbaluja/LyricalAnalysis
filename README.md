@@ -1,6 +1,6 @@
 # Pyrical Analysis
 
-PyricalAnalysis is a python library combining aspects of the nltk package and LyricsGenius python-based genius.com api package to allow users to view sentiment breakdown for their favorite artists, albums, and songs.
+PyricalAnalysis is a python library combining aspects of the nltk package and LyricsGenius python-based genius.com api package to allow users to view the sentiment breakdown for the lyrics of their favorite artists and songs.
 
 ## Installation
 
