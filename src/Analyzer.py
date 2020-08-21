@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import lib.utils.utils as utils # For sanitation 
-import os
+import os # For accessing cache
 
 # For graphing
 import lib.utils.grapher as gr
@@ -137,10 +137,8 @@ class Analyzer():
         Create a json file from the dataframe
         
         Parameters:
-        - artist: (str)
-            - name of artist (for file name)
-        - by: (str)
-            - how data was collected (for file name)
+        - filename: (str)
+            - filename to pull from cache
         - df: (pd.DataFrame)
             - dataframe to be serialized
         '''
@@ -148,7 +146,10 @@ class Analyzer():
         if not os.path.isdir('cache'):
             os.mkdir('cache')
         
-        df.to_json('cache/{}.json'.format(filename))
+        # Move into cache, write file, move back
+        os.chdir('cache')
+        df.to_json('{}.json'.format(filename))
+        os.chdir('../')
         print('File saved to cache')
 
     def from_cache(self, filename):
@@ -156,17 +157,15 @@ class Analyzer():
         Create dataframe of data to analyze from previously cached json file
 
         Parameters:
-        - artist: (str)
-            - title of artist 
-        - by: (str)
-            - how data was collected
+        - filename: (str)
+            - filename to pull from cache
         Return:
         - df: (pd.DataFrame)
             - if csv was found, returns content in dataframe
         '''
         try:
             print('Reading data from cache...', end=' ')
-            df = pd.read_json('cache/{}.json'.format(filename))
+            df = pd.read_json(os.path.join('cache', '{}.json').format(filename))
             print('done')
             return df
         except ValueError:
