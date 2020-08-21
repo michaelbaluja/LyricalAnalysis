@@ -23,8 +23,7 @@ def trim_songs(df, remix=False, unfinished=False):
         df, unfinished_songs = remove_unfinished(df)
         songs_to_remove.extend(unfinished_songs)
     
-    print('songs_to_remove: ', songs_to_remove==True)
-    if not songs_to_remove:
+    if songs_to_remove:
         print('songs to remove: ', songs_to_remove)
 
     return df
