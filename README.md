@@ -17,10 +17,31 @@ A Geniuse API client key is required for use. A client access key can be gathere
 
 In order to easily analyze an artist, run *main.py* from the command line with the proper artist/song to analyze, along with any other arguments for analysis (see chart below). 
 
+### Artist Analysis
+
 ```bash
 python src/main.py --from_cache --artist 'Childish Gambino' --by 'album' --plot 'line'
 ```
-- Note that for artist names that consist of more than one word, the name must be surrounded by a matching set of single or double quotations
+
+### Song Analysis
+
+```bash
+python src/main.py --from_cache --artist 'Childish Gambino' --song 'The Longest Text Message' --plot 'line'
+```
+Note that for artist/song names that consist of more than one word, the name must be surrounded by a matching set of single or double quotations
+
+### Runtime Arguments
+| Argument                      | Description                                                                  |
+|-------------------------------|------------------------------------------------------------------------------|
+| &dash;&dash;genius_key        | Genius API key. Only required if env variable not set                        |
+| &dash;&dash;artist            | Artist to perform analysis on. Not required for song analysis                |
+| &dash;&dash;song              | Song to perform analysis on. Not required for artist analysis                |
+| &dash;&dash;by                | Specifies how to structure analysis (if artist search, can do album or song) |
+| &dash;&dash;plot              | Specifies how to plot analysis (plot, line) (can pass multiple)              |
+| &dash;&dash;remove_remix      | Flag to remove songs containing remix keywords                               |
+| &dash;&dash;remove_unfinished | Flag to remove songs that have unfinished keywords                           |
+| &dash;&dash;from_cache        | Flag to read artist/song info from cache                                     |
+| &dash;&dash;cache             | Flag to write artist/song info to cache                                      |
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
