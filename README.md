@@ -43,6 +43,8 @@ Note that for artist/song names that consist of more than one word, the name mus
 | &dash;&dash;from_cache        | Flag to read artist/song info from cache                                     |
 | &dash;&dash;cache             | Flag to write artist/song info to cache                                      |
 
+While all non-flag arguments require additional input, flag arguments do not require any additional parameter.
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
